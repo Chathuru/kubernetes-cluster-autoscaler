@@ -1,5 +1,7 @@
 ## Kubernetes Cluster Autoscaler
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/Chathuru/kubernetes-cluster-autoscaler)](https://goreportcard.com/report/github.com/Chathuru/kubernetes-cluster-autoscaler)
+
 ### Developer Requirements
 - [Kubernetes](https://kubernetes.io/) version 1.17.x
 - [Go](https://golang.org/doc/install) version 1.14.x (to build the source and develop plugins)
