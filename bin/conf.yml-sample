@@ -1,0 +1,40 @@
+# OpenStack, GCP, AWS, libvirt, Other
+CloudType: OpenStack
+
+#  Other Supported Keys accordign to the CloudType chose.
+# AuthOptions:
+#   ProjectName: ""
+#   ClientSecret: ""
+#   ClientId: ""
+#   Region: ""
+#   AuthFile: ""
+AuthOptions:
+  IdentityEndpoint: ""
+  Username: ""
+  Password: ""
+  TenantID: ""
+  DomainName: ""
+
+# Common for any CloudType Select
+WorkerImageName: ""
+# Cool Down Time in seconds
+CoolDownTime: 600
+# Minimum number of nodes in the Cluster including master node. 2 equals to one master and one worker.
+MinNodeCount: 2
+# Minimum number of nodes in the Cluster
+MaxNodeCount: 5
+PassConfigToPlugin: false
+
+Network:
+  SecurityGroupName: ""
+  NetworkUUID: ""
+
+OpenStackFlavours:
+  DefaultFlavour: "t2.medium"
+  Flavours:
+  - Name: "t2.medium"
+    VCPU: 2
+    Memory: 4096
+  - Name: "t2.large"
+    VCPU: 2
+    Memory: 8192
