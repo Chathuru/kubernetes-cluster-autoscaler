@@ -86,7 +86,7 @@ func PendingPodListCheck(podName string) bool {
 	return true
 }
 
-// GetOpenstackFlavor Select a flavor from the list of user definded falvors
+// GetOpenstackFlavor Select a flavor from the list of user definded flavors
 func GetOpenstackFlavor(pod v1.Pod) string {
 	defer PanicRecovery()
 	var requestsCPU, requestsMemory int64
