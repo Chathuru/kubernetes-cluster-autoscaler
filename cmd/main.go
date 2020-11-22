@@ -22,8 +22,8 @@ import (
 var (
 	wg sync.WaitGroup
 	CloudType string
-	modifyEventAnalyzer func(string, string, string, string, string)
-	deleteEventAnalyzer func(string, string, string, string, string)
+	modifyEventAnalyzer func(datastructures.Event, string, string, string, string, string)
+	deleteEventAnalyzer func(datastructures.Event, string, string, string, string, string)
 )
 
 func checkErr(err error) {
@@ -44,13 +44,13 @@ func main() {
 
 		var ok bool
 		modifyEventAnalyzerSymbol, err := plugIn.Lookup("ModifyEventAnalyzer")
-		modifyEventAnalyzer, ok = modifyEventAnalyzerSymbol.(func(string, string, string, string, string))
+		modifyEventAnalyzer, ok = modifyEventAnalyzerSymbol.(func(datastructures.Event, string, string, string, string, string))
 		if err != nil || !ok {
 			log.Fatalf("[ERROR] Something went wrong while loading plugin %v", err)
 		}
 
 		deleteEventAnalyzerSymbol, err := plugIn.Lookup("DeleteEventAnalyzer")
-		deleteEventAnalyzer, ok = deleteEventAnalyzerSymbol.(func(string, string, string, string, string))
+		deleteEventAnalyzer, ok = deleteEventAnalyzerSymbol.(func(datastructures.Event, string, string, string, string, string))
 		if err != nil || !ok {
 			log.Fatalf("[ERROR] Something went wrong while loading plugin %v", err)
 		}
@@ -93,13 +93,13 @@ func eventFilter(event watch.Event, config *rest.Config) {
 		if CloudType == "OpenStack" {
 			handlenodeadd.ModifyEventAnalyzer(EventList)
 		} else {
-			modifyEventAnalyzer(openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientId, openstackinit.AWSRegion, openstackinit.AuthFile)
+			modifyEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientId, openstackinit.AWSRegion, openstackinit.AuthFile)
 		}
 	case "DELETED":
 		if CloudType == "OpenStack" {
 			handelnodedelete.DeleteEventAnalyzer(EventList, config)
 		} else {
-			deleteEventAnalyzer(openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientId, openstackinit.AWSRegion, openstackinit.AuthFile)
+			deleteEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientId, openstackinit.AWSRegion, openstackinit.AuthFile)
 		}
 	}
 }

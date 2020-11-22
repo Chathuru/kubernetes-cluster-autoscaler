@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/Chathuru/kubernetes-cluster-autoscaler/pkg/common/datastructures"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -10,7 +11,7 @@ import (
 	"log"
 )
 
-func ModifyEventAnalyzer(ProjectName, ClientSecret, ClientId, AWSRegion, AuthFile string) {
+func ModifyEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientId, AWSRegion, AuthFile string) {
 	awsSession, err := session.NewSession(&aws.Config{
 		Region:      aws.String(AWSRegion),
 	})
@@ -54,6 +55,6 @@ func ModifyEventAnalyzer(ProjectName, ClientSecret, ClientId, AWSRegion, AuthFil
 		log.Println(*runResult.Instances[0].InstanceId, *runResult.Instances[0].PublicIpAddress)
 }
 
-func DeleteEventAnalyzer(ProjectName, ClientSecret, ClientId, AWSRegion, AuthFile string) {
+func DeleteEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientId, AWSRegion, AuthFile string) {
 	log.Println("This is a sample...")
 }
