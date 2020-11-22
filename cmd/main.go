@@ -8,7 +8,6 @@ import (
 	"github.com/Chathuru/kubernetes-cluster-autoscaler/pkg/cloud/openstack/handle-node-add"
 	"github.com/Chathuru/kubernetes-cluster-autoscaler/pkg/common/datastructures"
 	"github.com/Chathuru/kubernetes-cluster-autoscaler/pkg/common/functions"
-	_ "github.com/mattn/go-sqlite3"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/watch"
@@ -20,8 +19,8 @@ import (
 )
 
 var (
-	wg sync.WaitGroup
-	CloudType string
+	wg                  sync.WaitGroup
+	cloudType           string
 	modifyEventAnalyzer func(datastructures.Event, string, string, string, string, string)
 	deleteEventAnalyzer func(datastructures.Event, string, string, string, string, string)
 )
@@ -33,13 +32,13 @@ func checkErr(err error) {
 }
 
 func main() {
-	CloudType = openstackinit.ReadConfig()
+	cloudType = openstackinit.ReadConfig()
 
-	if CloudType != "OpenStack" {
-		pluginName := CloudType+".so"
+	if cloudType != "OpenStack" {
+		pluginName := cloudType + ".so"
 		plugIn, err := plugin.Open("plugin/" + pluginName)
 		if err != nil {
-			log.Fatalf("[ERROR] Cloud not load the plugin %s in plugin directory %v",pluginName,err)
+			log.Fatalf("[ERROR] Cloud not load the plugin %s in plugin directory %v", pluginName, err)
 		}
 
 		var ok bool
@@ -54,7 +53,7 @@ func main() {
 		if err != nil || !ok {
 			log.Fatalf("[ERROR] Something went wrong while loading plugin %v", err)
 		}
-		log.Printf("[INFO] %s plugin loaded succesfully", CloudType)
+		log.Printf("[INFO] %s plugin loaded succesfully", cloudType)
 	}
 
 	config := functions.LoadKubeConfig()
@@ -90,16 +89,16 @@ func eventFilter(event watch.Event, config *rest.Config) {
 
 	switch EventList.Type {
 	case "MODIFIED":
-		if CloudType == "OpenStack" {
+		if cloudType == "OpenStack" {
 			handlenodeadd.ModifyEventAnalyzer(EventList)
 		} else {
-			modifyEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientId, openstackinit.AWSRegion, openstackinit.AuthFile)
+			modifyEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientID, openstackinit.AWSRegion, openstackinit.AuthFile)
 		}
 	case "DELETED":
-		if CloudType == "OpenStack" {
+		if cloudType == "OpenStack" {
 			handelnodedelete.DeleteEventAnalyzer(EventList, config)
 		} else {
-			deleteEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientId, openstackinit.AWSRegion, openstackinit.AuthFile)
+			deleteEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientID, openstackinit.AWSRegion, openstackinit.AuthFile)
 		}
 	}
 }

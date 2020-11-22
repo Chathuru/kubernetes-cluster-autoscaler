@@ -25,11 +25,11 @@ var (
 	Password            string
 	TenantID            string
 	DomainName          string
-	ProjectName string
-	ClientSecret string
-	ClientId string
-	AWSRegion string
-	AuthFile string
+	ProjectName         string
+	ClientSecret        string
+	ClientID            string
+	AWSRegion           string
+	AuthFile            string
 )
 
 // ConfigYaml used to decode the configuration file
@@ -52,11 +52,11 @@ type AuthOptions struct {
 	Password         string `yaml:"Password"`
 	TenantID         string `yaml:"TenantID"`
 	DomainName       string `yaml:"DomainName"`
-	ProjectName string `yaml:"ProjectName"`
-	ClientSecret string `yaml:"ClientSecret"`
-	ClientId string `yaml:"ClientId"`
-	AWSRegion string `yaml:"AWSRegion"`
-	AuthFile string `yaml:"AuthFile"`
+	ProjectName      string `yaml:"ProjectName"`
+	ClientSecret     string `yaml:"ClientSecret"`
+	ClientID         string `yaml:"ClientId"`
+	AWSRegion        string `yaml:"AWSRegion"`
+	AuthFile         string `yaml:"AuthFile"`
 }
 
 // Network OpenStack network configuration to used
@@ -92,7 +92,7 @@ func ReadConfig() string {
 		log.Fatalf("[ERROR] Error decording Config YAML file: %s\n", err)
 	}
 
-	if conf.CloudType == ""{
+	if conf.CloudType == "" {
 		log.Fatal("[ERROR] \"CloudType\" must be set to one of OpenStack, GCP, AWS, libvirt, Other value.")
 	}
 	IdentityEndpoint = conf.AuthOptions.IdentityEndpoint
@@ -104,7 +104,7 @@ func ReadConfig() string {
 		log.Fatal("[ERROR] Authentication details should not be empty.")
 	}
 
-	if conf.CloudType == "AWS" && conf.AuthOptions.AWSRegion == ""{
+	if conf.CloudType == "AWS" && conf.AuthOptions.AWSRegion == "" {
 		log.Fatal("[ERROR] AWS Region should be a valid value")
 	}
 

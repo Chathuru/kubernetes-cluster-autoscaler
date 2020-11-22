@@ -11,7 +11,8 @@ import (
 	"log"
 )
 
-func ModifyEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientId, AWSRegion, AuthFile string) {
+// ModifyEventAnalyzer Analyze the Kubernetes events to capture pending nodes
+func ModifyEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientID, AWSRegion, AuthFile string) {
 	awsSession, err := session.NewSession(&aws.Config{
 		Region:      aws.String(AWSRegion),
 	})
@@ -55,6 +56,7 @@ func ModifyEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecr
 		log.Println(*runResult.Instances[0].InstanceId, *runResult.Instances[0].PublicIpAddress)
 }
 
-func DeleteEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientId, AWSRegion, AuthFile string) {
+// DeleteEventAnalyzer Analyze Kubernetes events and capture delete event
+func DeleteEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientID, AWSRegion, AuthFile string) {
 	log.Println("This is a sample...")
 }
