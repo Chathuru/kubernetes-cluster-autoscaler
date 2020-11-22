@@ -6,7 +6,7 @@ CloudType: OpenStack
 #   ProjectName: ""
 #   ClientSecret: ""
 #   ClientId: ""
-#   Region: ""
+#   AWSRegion: ""
 #   AuthFile: ""
 AuthOptions:
   IdentityEndpoint: ""

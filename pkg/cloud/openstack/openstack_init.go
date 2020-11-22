@@ -25,6 +25,11 @@ var (
 	Password            string
 	TenantID            string
 	DomainName          string
+	ProjectName string
+	ClientSecret string
+	ClientId string
+	AWSRegion string
+	AuthFile string
 )
 
 // ConfigYaml used to decode the configuration file
@@ -47,6 +52,11 @@ type AuthOptions struct {
 	Password         string `yaml:"Password"`
 	TenantID         string `yaml:"TenantID"`
 	DomainName       string `yaml:"DomainName"`
+	ProjectName string `yaml:"ProjectName"`
+	ClientSecret string `yaml:"ClientSecret"`
+	ClientId string `yaml:"ClientId"`
+	AWSRegion string `yaml:"AWSRegion"`
+	AuthFile string `yaml:"AuthFile"`
 }
 
 // Network OpenStack network configuration to used
@@ -70,23 +80,37 @@ type Flavours struct {
 }
 
 // ReadConfig read and configure starup variables from the config.yml
-func ReadConfig() {
+func ReadConfig() string {
 	ConfigFile, err := ioutil.ReadFile("conf.yml")
 	if err != nil {
-		log.Fatal("Error reading Config YAML file: %s\n", err)
+		log.Fatalf("[ERROR] Error reading Config YAML file: %s\n", err)
 	}
 
 	conf := ConfigYaml{}
 	err = yaml.Unmarshal(ConfigFile, &conf)
 	if err != nil {
-		log.Fatal("Error decording Config YAML file: %s\n", err)
+		log.Fatalf("[ERROR] Error decording Config YAML file: %s\n", err)
 	}
 
+	if conf.CloudType == ""{
+		log.Fatal("[ERROR] \"CloudType\" must be set to one of OpenStack, GCP, AWS, libvirt, Other value.")
+	}
 	IdentityEndpoint = conf.AuthOptions.IdentityEndpoint
 	Username = conf.AuthOptions.Username
 	Password = conf.AuthOptions.Password
 	TenantID = conf.AuthOptions.TenantID
 	DomainName = conf.AuthOptions.DomainName
+	if conf.CloudType == "OpenStack" && (IdentityEndpoint == "" || Username == "" || Password == "" || TenantID == "" || DomainName == "") {
+		log.Fatal("[ERROR] Authentication details should not be empty.")
+	}
+
+	if conf.CloudType == "AWS" && conf.AuthOptions.AWSRegion == ""{
+		log.Fatal("[ERROR] AWS Region should be a valid value")
+	}
+
+	if conf.CloudType == "GCP" && conf.AuthOptions.ProjectName == "" {
+		log.Fatal("[ERROR] Project name should not be empty")
+	}
 
 	CoolDownTime = time.Duration(conf.CoolDownTime)
 	MinNodeCount = conf.MinNodeCount
@@ -102,6 +126,8 @@ func ReadConfig() {
 
 	FlavorsList = datastructures.FlavorList{len(conf.OpenStackFlavours.Flavours), FlavorDetails, conf.OpenStackFlavours.DefaultFlavour}
 	IgnoreNamespaceList = map[string]bool{"ingress-nginx": true, "kube-node-lease": true, "kube-public": true, "kube-system": true}
+
+	return conf.CloudType
 }
 
 // GetOpenstackToken authenticate OpenStack cloud

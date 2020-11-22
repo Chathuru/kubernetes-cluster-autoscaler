@@ -17,7 +17,7 @@ func LoadKubeConfig() *rest.Config {
 
 	configIncluster, err := rest.InClusterConfig()
 	if err != nil {
-		log.Println("In Cluster config not found", err)
+		log.Println("[INFO] In Cluster config not found", err)
 		configExternal, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 		if err != nil {
 			log.Fatal(err)

@@ -14,4 +14,14 @@ go build -o bin/autoscaler cmd/main.go
 
 Take a copy of `conf.yml-sample` as `conf.yml`. Fill all the required data fields.
 
-Configure the Kubectl. This look for the kube config file in the default path `~/.kube/config` or you can run as a pon in a Kubernetes cluster.  
+Configure the Kubectl. This look for the kube config file in the default path `~/.kube/config` or you can run as a pon in a Kubernetes cluster.
+
+```
+.
+├── autoscaler
+├── conf.yml
+└── plugin
+    └── AWS.so
+```
+
+Copy the build plugin to `./bin/plugin` directory. Change the `CloudType` in conf.yml to `AWS`. This will load and configure the plugin.
