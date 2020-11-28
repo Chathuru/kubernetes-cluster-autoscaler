@@ -13,6 +13,12 @@ import (
 
 // ModifyEventAnalyzer Analyze the Kubernetes events to capture pending nodes
 func ModifyEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientID, AWSRegion, AuthFile string) {
+	// Code to Analyzed and trigger NodeAdd function
+	log.Println("This is a sample...")
+}
+
+// NodeAdd worker node
+func NodeAdd(AWSRegion string) {
 	awsSession, err := session.NewSession(&aws.Config{
 		Region:      aws.String(AWSRegion),
 	})
@@ -58,5 +64,11 @@ func ModifyEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecr
 
 // DeleteEventAnalyzer Analyze Kubernetes events and capture delete event
 func DeleteEventAnalyzer(EventList datastructures.Event, ProjectName, ClientSecret, ClientID, AWSRegion, AuthFile string) {
+	// Codes to Analyzed and trigger NodeDelete function
+	log.Println("This is a sample...")
+}
+
+func NodeDelete() {
+	// Code to delete the worker node and remove node from Kubernetes cluster
 	log.Println("This is a sample...")
 }

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autoscalar
+  namespace: kube-system
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: kube-autoscalar
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: kube-autoscalar
+    spec:
+      containers:
+      - name: autoscalar
+        image: chathuru/autoscaler:latest
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: config
+          mountPath: /go/bin/conf.yml
+          subPath: conf.yml
+      serviceAccount: autoscalar
+      serviceAccountName: autoscalar
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config
+        configMap:
+          name: autoscalar-config

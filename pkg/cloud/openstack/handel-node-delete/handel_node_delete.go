@@ -51,7 +51,7 @@ func DeleteEventAnalyzer(EventList datastructures.Event, config *rest.Config) {
 		nodeCount := len(nodeList.Items)
 
 		if (cpu/cpuCap)*100 <= 5 || count < 5 && openstackinit.MinNodeCount < nodeCount {
-			log.Printf("[INFO] Node Name - %s ID - %s marked to delete. Will delete in 10 min", node.Name, node.Status.NodeInfo.SystemUUID)
+			log.Printf("[INFO] Node Name - %s ID - %s marked to delete. Will delete in %d minutes", node.Name, node.Status.NodeInfo.SystemUUID, openstackinit.CoolDownTime/60)
 			go RemoveWorkerNode(clientSet, node.Name, node.Status.NodeInfo.SystemUUID)
 		}
 	}
@@ -87,7 +87,7 @@ func RemoveWorkerNode(clientSet *kubernetes.Clientset, nodeName, nodeID string) 
 	} else {
 		clientSet.CoreV1().Nodes().Delete(context.TODO(), nodeName, metav1.DeleteOptions{})
 		DeleteVM(nodeID)
-		log.Printf("[INFO] %s (%s) Node safly remove from the cluster and delete the virtual machin", nodeName, nodeID)
+		log.Printf("[INFO] %s (%s) Node safly remove from the cluster and delete the virtual machine", nodeName, nodeID)
 	}
 }
 

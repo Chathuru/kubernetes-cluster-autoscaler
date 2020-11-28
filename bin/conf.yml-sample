@@ -17,7 +17,7 @@ AuthOptions:
 
 # Common for any CloudType Select
 WorkerImageName: ""
-# Cool Down Time in seconds
+# Cool Down Time in seconds. Minimum value 60 (one second)
 CoolDownTime: 600
 # Minimum number of nodes in the Cluster including master node. 2 equals to one master and one worker.
 MinNodeCount: 2
