@@ -61,6 +61,9 @@ func TriggerStatusCheck(pod v1.Pod, config *rest.Config) {
 		}
 		TriggerAddNode(GetOpenstackFlavor(pod))
 	} else {
+		if nodeCount == openstackinit.MaxNodeCount {
+			log.Println("[INFO] Max node count reached")
+		}
 		if PendingPodListCheck(pod.Name) {
 			log.Println("[INFO] Node add triggerd. Waiting for new node")
 			pendingPodList = append(pendingPodList, pod.Name)
