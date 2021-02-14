@@ -1,10 +1,14 @@
 package handlenodeadd
 
 import (
+	"context"
 	"github.com/Chathuru/kubernetes-cluster-autoscaler/pkg/cloud/openstack"
 	"github.com/Chathuru/kubernetes-cluster-autoscaler/pkg/common/datastructures"
 	"github.com/rackspace/gophercloud/openstack/compute/v2/servers"
 	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"log"
 	"math/rand"
 	"strings"
@@ -24,13 +28,13 @@ func IsNeededPendingStatus(status v1.PodCondition) bool {
 }
 
 // ModifyEventAnalyzer Analyze the Kubernetes events to capture pending nodes
-func ModifyEventAnalyzer(EventList datastructures.Event) {
+func ModifyEventAnalyzer(EventList datastructures.Event, config *rest.Config) {
 	status := EventList.Object.Status.Conditions[0]
 	if EventList.Object.Status.Phase == "Pending" && status.Type == "PodScheduled" && status.Status == "False" {
 		if IsNeededPendingStatus(status) {
 			log.Printf("[ERROR] %s - %s", status.Reason, status.Message)
 			wg.Add(1)
-			go TriggerStatusCheck(EventList.Object)
+			go TriggerStatusCheck(EventList.Object, config)
 		}
 	}
 
@@ -40,8 +44,16 @@ func ModifyEventAnalyzer(EventList datastructures.Event) {
 }
 
 // TriggerStatusCheck Trigger adding a new Kubernetes worker node
-func TriggerStatusCheck(pod v1.Pod) {
-	if !triggerLock {
+func TriggerStatusCheck(pod v1.Pod, config *rest.Config) {
+	clientSet, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		log.Println(err)
+	}
+
+	nodes, _ := clientSet.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	nodeCount := len(nodes.Items)
+
+	if !triggerLock && nodeCount < openstackinit.MaxNodeCount {
 		log.Println("[INFO] Node add trigger.")
 		triggerLock = true
 		if PendingPodListCheck(pod.Name) {

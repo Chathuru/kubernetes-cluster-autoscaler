@@ -90,7 +90,7 @@ func eventFilter(event watch.Event, config *rest.Config) {
 	switch EventList.Type {
 	case "MODIFIED":
 		if cloudType == "OpenStack" {
-			handlenodeadd.ModifyEventAnalyzer(EventList)
+			handlenodeadd.ModifyEventAnalyzer(EventList, config)
 		} else {
 			modifyEventAnalyzer(EventList, openstackinit.ProjectName, openstackinit.ClientSecret, openstackinit.ClientID, openstackinit.AWSRegion, openstackinit.AuthFile)
 		}
