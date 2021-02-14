@@ -114,7 +114,7 @@ func ReadConfig() string {
 
 	CoolDownTime = time.Duration(conf.CoolDownTime)
 	MinNodeCount = conf.MinNodeCount
-	MaxNodeCount = conf.MinNodeCount
+	MaxNodeCount = conf.MaxNodeCount
 	ImageName = conf.WorkerImageName
 	SecurityGroupName = conf.Network.SecurityGroupName
 	NetworkUUID = conf.Network.NetworkUUID

@@ -50,8 +50,8 @@ func TriggerStatusCheck(pod v1.Pod, config *rest.Config) {
 		log.Println(err)
 	}
 
-	nodes, _ := clientSet.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
-	nodeCount := len(nodes.Items)
+	node, _ := clientSet.CoreV1().Nodes().List(context.TODO(), metav1.ListOptions{})
+	nodeCount := len(node.Items)
 
 	if !triggerLock && nodeCount < openstackinit.MaxNodeCount {
 		log.Println("[INFO] Node add trigger.")
@@ -63,8 +63,7 @@ func TriggerStatusCheck(pod v1.Pod, config *rest.Config) {
 	} else {
 		if nodeCount == openstackinit.MaxNodeCount {
 			log.Println("[INFO] Max node count reached")
-		}
-		if PendingPodListCheck(pod.Name) {
+		} else if PendingPodListCheck(pod.Name) {
 			log.Println("[INFO] Node add triggerd. Waiting for new node")
 			pendingPodList = append(pendingPodList, pod.Name)
 		}
