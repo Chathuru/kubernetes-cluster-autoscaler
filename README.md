@@ -1,5 +1,4 @@
 ## Kubernetes Cluster Autoscaler
-
 [![Go Report Card](https://goreportcard.com/badge/github.com/Chathuru/kubernetes-cluster-autoscaler)](https://goreportcard.com/report/github.com/Chathuru/kubernetes-cluster-autoscaler)
 
 ### Developer Requirements
